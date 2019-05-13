@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>进入/离开$列表过度</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+</head>
+<body>
+<!--
+  单元素/组件的过度：
+    Vue提供了 transition 的封装组件，在下列情形中，可以给任何元素和组件添加进入/离开过度
+      1、条件渲染(使用 v-if)
+      2、条件展示(使用 v-show)
+      3、动态组件
+      4、组件根节点
+-->
+<div id="demo">
+    <button @click="show = !show">
+        Toggle
+    </button>
+    <transition name="fade">
+        <p v-if="show">hello</p>
+    </transition>
+</div>
+<!--
+  列表过度：
+    同时渲染整个列表，如使用 v-for，在这种场景中，使用 <transition-group> 组件
+
+  <transition-group> 组件的特点：
+    1、不同于 <transition>，它会以一个真实元素呈现：默认为一个 <span>。也可以通过 tag 特性更换为其他元素
+    2、过渡模式不可用，因为我们不在相互切换特有的元素
+    3、内部元素总是需要提供唯一的 key 属性值
+-->
+<!-- 列表的进入/离开过渡 -->
+<div id="list-demo" class="demo">
+    <button @click="add">Add</button>
+    <button @click="remove">Remove</button>
+    <transition-group name="list" tag="p">
+        <span v-for="item in items" :key="item" class="list-item">
+            {{item}}
+        </span>
+    </transition-group>
+</div>
+<!--
+  列表排序过渡：
+    <transition-group> 组件还有一个特殊之处。不仅可以进入和离开动画，还可以改变定位。要使用这个心=新功能只需了解新增的
+    v-move 特性，它会在元素改变定位的过程中应用
+-->
+<div id="flip-list-demo" class="demo">
+    <button @click="shuffle">Shuffle</button>
+    <transition-group name="flip-list" tag="ul">
+        <li v-for="item in items" :key="item">
+            {{item}}
+        </li>
+    </transition-group>
+</div>
+<!-- 列表的交错过渡：通过data属性和JavaScript通信，就可以实现列表的交错过渡 -->
+<div id="staggered-list-demo">
+    <input v-model="query"/>
+    <transition-group
+            name="fade"
+            tag="ul"
+            :css="false"
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @leave="leave"
+    >
+        <li v-for="(item,index) in computedList" :key="item.msg" :data-index="index">
+            {{item.msg}}
+        </li>
+    </transition-group>
+</div>
+
+
+<script>
+    var demo = new Vue({
+        el: '#demo',
+        data: {
+            show: true
+        }
+    })
+    var listDemo = new Vue({
+        el: '#list-demo',
+        data: {
+            items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            nextNum: 10
+        },
+        methods: {
+            randomIndex: function () {
+                //Math.floor(x)：对一个数进行下舍入
+                //x：必需。任意数值或表达式
+                //Math.random()：返回0.0—1.0之间的一个随机数
+                //Math.random()*5：表示返回一个0.0—5.0之间的一个随机数
+                return Math.floor(Math.random() * this.items.length)
+            },
+            add: function () {
+                //arrayObject.splice(index,howmany,item1,...,itemX)
+                //index：必需。是一个整数，规定添加或删除的项目的位置，使用负数可从数组结尾处规定位置
+                //howmany：必需。要删除的项目数量。如果设置为0，则不会删除项目
+                //item1,...itemX：可选。向数组添加新的项目
+                this.items.splice(this.randomIndex(), 0, this.nextNum++)
+            },
+            remove: function () {
+                this.items.splice(this.randomIndex(), 1)
+            }
+        }
+    })
+    var flipListDemo = new Vue({
+        el: '#flip-list-demo',
+        data: {
+            items: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        },
+        methods: {
+            shuffle() {
+                this.items = _.shuffle(this.items)
+            }
+        }
+    })
+
+    var staggeredListDemo = new Vue({
+        el: '#staggered-list-demo',
+        data: {
+            query: '',
+            list: [
+                {msg: 'aaab'},
+                {msg: 'bbbc'},
+                {msg: 'cccd'},
+                {msg: 'ddde'},
+                {msg: 'eeef'}
+            ]
+        },
+        computed: {
+            computedList() {
+                var vm = this
+                return this.list.filter(item => {
+                    //stringObject.indexOf(searchValue,fromIndex)：返回searchValue字符串在stringObject字符串中
+                    //首次出现的位置，如果searchValue字符串没有出现，则返回-1。该方法对大小写时敏感的
+                    //searchValue：必需。规定需检索的字符串值
+                    //fromIndex：可选的整数参数。规定在字符串中开始检索的位置。它的合法取值为0—stringObject.length-1。
+                    //如果省略。则将从字符串的手字符开始检索
+                    return item.msg.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1
+                })
+            }
+        },
+        methods: {
+            beforeEnter(el) {
+                el.style.opacity = 0
+                el.style.height = 0
+            },
+            enter: function (el, done) {
+                var delay = el.dataset.index * 150
+                setTimeout(function () {
+                    Velocity(
+                        el,
+                        { opacity: 1, height: '1.6em' },
+                        { complete: done }
+                    )
+                }, delay)
+            },
+            leave: function (el, done) {
+                var delay = el.dataset.index * 150
+                setTimeout(function () {
+                    Velocity(
+                        el,
+                        { opacity: 0, height: 0 },
+                        { complete: done }
+                    )
+                }, delay)
+            }
+        }
+    })
+</script>
+
+
+<style>
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+    {
+        opacity: 0;
+    }
+
+    .list-item {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .list-enter-active, .list-leave-active {
+        transition: all 1s;
+    }
+
+    .list-enter, .list-leave-to
+        /* .list-leave-active for below version 2.1.8 */
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .flip-list-move {
+        transition: transform 1s;
+    }
+</style>
+</body>
+</html>

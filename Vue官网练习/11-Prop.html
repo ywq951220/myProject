@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Prop</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<!-- 在使用DOM中额模板时，camelCase(驼峰命名法)的prop名需要使用其等价的kebab-case(短横线分割命名)命名 -->
+<blog-post post-title="hello!"></blog-post>
+
+<!-- 传递静态或动态的Prop -->
+<blog-post title="My with Vue"></blog-post>
+<!-- 动态赋予一个变量的值 -->
+<blog-post :title="post.title"></blog-post>
+<!-- 动态赋予一个复杂表达式的值 -->
+<blog-post :title="post.title + 'by' + post.author.name"></blog-post>
+<!-- 传入一个数组 -->
+<!-- 用一个变量进行赋值 -->
+<blog-post :comment-ids="post.commentIds"></blog-post>
+<!-- 传入一个对象 -->
+<!-- 即便对象是静态的，我们任然需要 v-bind 来告诉Vue这是一个JavaScript表达式而不是一个字符串 -->
+<blog-post :author="{name:'jack',address:'兰州市'}"></blog-post>
+<!-- 用一个变量进行动态赋值 -->
+<blog-post :author="post.author"></blog-post>
+
+
+<script>
+  Vue.component('blog-post', {
+    //在JavaScript中是驼峰命名法
+    props: ['postTitle'],
+    //当希望每个prop都有指定的值类型时，可以使用对象的形式列出prop，这些属性的名称和值分别是prop各自的名称和类型。
+    // 这不仅为你的组件提供了文档，还会在他们遇到错误的类型时从浏览器测JavaScript控制台提示用户
+    props: {
+      title: String,
+      likes: Number,
+      isPublished: Boolean,
+      commentIds: Array,
+      author: Object,
+      callback: Function,
+      contactsPromise: Promise
+    },
+    template: '<h3>{{postTitle}}</h3>'
+  })
+
+  //prop验证
+  Vue.component('my-component', {
+    props: {
+      //基础的类型检查('null'和'undefined'会通过任何类型验证)
+      propA: Number,
+      //多个可能的类型
+      propB: [String, Number],
+      //必填的字符串
+      propC: {
+        type: String,
+        required: true
+      },
+      //带有默认值的数字
+      propD: {
+        type: Number,
+        default: 100
+      },
+      //带有默认值的对象
+      propE: {
+        type: Object,
+        //对象或数组默认值必须从一个工厂函数获取
+        default: function () {
+          return {message: 'hello'}
+        }
+      },
+      //自定义验证函数
+      propF: {
+        validator: function (value) {
+          //这个值必须匹配下列字符串中的一个
+          return ['success', 'warning', 'danger'].indexOf(value) !== -1
+        }
+      }
+      // 当prop验证失败的时候，Vue将会产生一个控制台的警告
+      // 注意：这些prop会在一个组件实例创建之前进行验证，所以实例的属性(如：data、computed等)在
+      // default 或 validator 函数中是不可用的
+    }
+  })
+
+
+  function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName
+  }
+
+  //然后可以使用一下代码来验证 author prop 的值是否是通过 new Person 创建的
+  Vue.component('blog-post', {
+    props: {
+      author: Person
+    }
+  })
+</script>
+</body>
+</html>

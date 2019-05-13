@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>结合webpack使用vue-router路由</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<!--
+  1、导入 vue-router 包。代码为：(import VueRouter from 'vue-router')
+    注意：前提是先要导入 Vue 包。代码为：(import Vue from 'vue')
+  2、手动安装 VueRouter。Vue/use(VueRouter)
+  3、创建路由对象
+    var router = new VueRouter({
+      routes:[
+        {path:'/account',component:account}
+        {path:'/goodslist',component:goodslist}
+      ]
+    })
+  4、将路由对象挂载到 vm 实例上。代码为：router。和 el 与 methods 同级
+-->
+
+
+
+<script>
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {}
+  })
+</script>
+</body>
+</html>

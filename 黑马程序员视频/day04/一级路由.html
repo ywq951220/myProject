@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+
+  <style type="text/css">
+    li{
+      list-style-type: none;
+      display: inline-block;
+      margin: 20px 10px;
+    }
+    a{
+      text-decoration: none;
+    }
+    .show{
+      width: 300px;
+      height: 200px;
+      background: #999999
+    }
+  </style>
+
+</head>
+<body>
+<div id="box">
+  <ul>
+    <li>
+      <router-link to="/home">home</router-link>
+    </li>
+    <li>
+      <router-link to='/news'>news</router-link>
+    </li>
+    <li>
+      <router-link to='/hot'>hot</router-link>
+    </li>
+  </ul>
+  <div class="show">
+    <router-view></router-view>
+  </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+  var vm =new Vue({
+    el:'#box',
+    data:{
+
+    },
+    //添加路由配置项
+    //route:路由实例（对象）
+    //route：new VueRouter
+    //设置路由配置项
+    /*
+
+    new VueRouter({
+    routes:[
+    {path:'url',component:'组件'}
+    ]
+
+    })
+     */
+    router:new VueRouter({
+      routes:[
+
+        {path:'/home', component:{
+            template:'<h2>首页</h2>'
+          }},
+        {path:'/news', component:{
+            template:'<h2>新闻</h2>'
+          }},
+        {path:'/hot', component:{
+            template:'<h2>热点</h2>'
+          }}
+      ]
+    })
+  });
+</script>

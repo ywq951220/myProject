@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>插槽</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<navigation-link url="/propfile">
+  <!--
+    这里的 url 访问不到，会是undefined，因为 /propfile 是传递给 <navigation-link> 的，而不是在
+    <navigation-link> 组件内部定义的
+  -->
+  Clicking here will send you to: {{ url }}
+  Your Profile
+</navigation-link>
+<a :href="url" class="nav-link">
+  <slot></slot>
+</a>
+<!--
+  注意：插槽内可以包含任何模板代码，甚至其他的组件，如果 <navigation-link> 中没有包含一个 <slot> 元素，则该组件的其实标签
+        和结束标签之间的任何内容将都会被抛弃
+
+  总结：父级模板中的多有内容都是在父级作用域中编译的；子模板中的所有内容是在子作用域中编译的
+-->
+
+<!--
+  后备内容：有时为一个插槽设置具体的后备(也就是默认的)内容是很有用的，它只会在没有提供内容的时候被渲染
+-->
+<button type="submit">
+  <slot></slot>
+</button>
+<!--
+  如果希望在这个 <button> 内绝大多数情况下都渲染文本“Submit”，为了将“Submit”作为后备内容，可以将它放在 <slot> 标签内
+-->
+<button type="submit">
+  <slot>Submit</slot>
+</button>
+<submit-button></submit-button>
+
+<!-- 具名插槽：有时需要多个插槽时，<slot> 元素有一个特殊的特性：name。这个特性可以用来定义额外的插槽 -->
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+<!--
+  注意：一个不带 name 的 <slot> 出口会带有隐含的名字“default”
+  想具名插槽中提供内容的时候，我们可以在一个 <template> 元素上使用 v-slot 指令，并以 v-slot 的参数的形式提供其名称
+-->
+<base-layout>
+  <template v-slot:header>
+    <h1>Here might be a page title</h1>
+  </template>
+
+  <p>A paragraph for the main content.</p>
+  <p>And another one.</p>
+
+  <template v-slot:footer>
+    <p>Here's some contact info</p>
+  </template>
+</base-layout>
+<!--
+  注意：
+    1、任何没有被包裹在带有 v-slot 的 <template> 中的所有内容都会被视为默认插槽的内容
+    2、v-slot 只能添加在一个 <template> 上
+
+  具名插槽的缩写：
+    即把参数之前的所有内容(v-slot:)替换为字符 # 。如：v-slot:header 可以被重写为 #header。该缩写只能在其有参数的时候可用。
+    如果希望使用缩写的话，必须始终以明确插槽名取而代之
+-->
+
+
+<script>
+
+</script>
+</body>
+</html>

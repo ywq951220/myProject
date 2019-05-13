@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>动态组件$异步组件</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<!-- 在动态组件上使用 <keep-alive> -->
+<!--
+  当希望那些标签的组件实例能够被在它们第一次被创建的时候缓存下来，我们可以使用一个 <keep-alive> 元素将其动态组件包裹起来
+-->
+<!-- 失活的组件将会被缓存 -->
+<keep-alive>
+    <component v-bind:is="currentTabComponent"></component>
+</keep-alive>
+<!-- 注意：这个 <keep-alive> 要求被切换到的组件都有自己的名字，不论是通过组件的 name 选项还是局部/全局注册 -->
+
+<!-- 异步组件 -->
+
+
+<script>
+    // 在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块。为了简化，
+    // Vue 允许你以一个工厂函数的方式定义你的组件，这个工厂函数会异步解析你的组件定义。Vue 只有在这个组件需要被
+    // 渲染的时候才会触发该工厂函数，且会把结果缓存起来供未来重渲染
+    Vue.component('async-example', function (resolve, reject) {
+        setTimeout(function () {
+            //向 resolve 回调中传递组件定义
+            resolve({
+                template: '<div>I am async!</div>'
+            })
+        }, 1000)
+    })
+    Vue.component('async-webpack-example', function (resolve) {
+        //这个特殊的 require 语法将会告诉 webpack，自动将你的构建代码切割成多个包，这些包会通过 Ajax 请求加载
+        require(['./my-async-component'], resolve)
+    })
+</script>
+</body>
+</html>

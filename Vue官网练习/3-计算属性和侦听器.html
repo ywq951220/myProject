@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>计算属性和侦听器</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+</head>
+<body>
+
+<h1>计算属性</h1>
+<div id="example">
+  <p>Original message:"{{message}}"</p>
+  <p>Computed reversed message:"{{reversedMessage}}"</p>
+
+  <h1>计算属性缓存和方法</h1>
+  <p>Reversed message:"{{reversedMessage}}"</p>
+</div>
+
+
+<h1>计算属性和侦听属性</h1>
+<div id="demo">{{fullName}}</div>
+
+<h1>侦听器</h1>
+<div id="watch-example">
+  <p>
+    Ask a yes/no question
+    <input v-model="question"/>
+  </p>
+  <p>{{answer}}</p>
+</div>
+
+
+<script>
+  var vm = new Vue({
+    el: '#example',
+    data: {
+      message: 'Hello'
+    },
+    //计算属性，主要就是对数据进行一定的操作。可以包含逻辑处理操作，对计算属性中的数据进行监控。计算属性是基于它的
+    // 依赖进行更新的，只有在相关依赖发生改变时才能更新变化，以函数的形式返回结果，然后可以向绑定普通属性一样在模板
+    // 中绑点计算属性
+    computed: {
+      //计算属性的getter
+      reversedMessage: function () {
+        //this 指向vm实例
+        //stringObject.split(separator,howmany)：将一个字符串分割成字符串数组。返回一个字符串数组
+        //separator：必需。字符串或正则表达式，从该参数指定的地方分割stringObject
+        //howmany：可选。该参数可指定返回的数组的最大长度。如果设置了该参数，返回的子串不会多于这个参数指定的
+        //数组。如果没有设置该参数，整个字符串都会被分割，不考虑它的长度
+        //reverse()：跌倒数组中元素的顺序
+        //join(separator)：将一个数组中的所有字符串放入一个字符串
+        //separator：可选。指定要使用的分割符。如果省略该参数，则默认使用都好作为分割符
+        return this.message.split('').reverse().join('');
+      }
+    },
+    // methods: {
+    //     reversedMessage: function () {
+    //         return this.message.split('').reverse().join('');
+    //     }
+    // }
+  })
+
+  var vm2 = new Vue({
+    // el: '#demo',
+    // data: {
+    //     firstName: 'Foo',
+    //     lastName: 'Bar',
+    //     fullName: 'Foo Bar'
+    // },
+    /**
+     * vue提供了一种更通用的方式来观察和响应Vue实例上的数据变动：侦听属性。当你有一些数据需要随着其他数据的变动而
+     * 变动时，你很容易滥用 watch。
+     * 然而，通常更好的做法是使用计算属性而不是命令式的watch回调
+     */
+    // watch: {
+    //     firstName: function (val) {
+    //         this.fullName = val + '' + this.lastName
+    //     },
+    //     lastName: function (val) {
+    //         this.fullName = this.firstName + '' + val
+    //     }
+    // }
+    el: '#demo',
+    data: {
+      firstName: 'Foo',
+      lastName: 'Bar'
+    },
+    computed: {
+      // fullName: function () {
+      //     return this.firstName + '' + this.lastName
+      // }
+      //计算属性setter
+      fullName: {
+        //getter
+        get: function () {
+          return this.firstName + '' + this.lastName
+        },
+        //setter
+        set: function (newValue) {
+          var names = newValue.split('')
+          this.firstName = names[0]
+          this.lastName = names[names.length - 1]
+        }
+      }
+    }
+  })
+
+  var watchExample = new Vue({
+    el: '#watch-example',
+    data: {
+      question: '',
+      answer: 'I cannot give you an answer until you ask a question!'
+    },
+    watch: {
+      question: function (newQuestion, oldQuestion) {
+        this.answer = '正在输入......'
+        this.debouncedGetAnswer()
+      }
+    },
+    created: function () {
+      this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
+    },
+    methods: {
+      getAnswer: function () {
+        if (this.question.indexOf('?') === -1) {
+          this.answer = '输入完毕'
+          return
+        }
+        this.answer = 'Thinking...'
+        var vm = this
+        axios.get('https://yesno.wtf/api').then(function (response) {
+          vm.answer = _.capitalize(response.data.answer)
+        }).catch(function (error) {
+          vm.answer = 'Error! Could not reach the API. ' + error
+        })
+      }
+    }
+  })
+</script>
+</body>
+</html>

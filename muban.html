@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计算属性和侦听器</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="example">
+        <!-- 在这里模板不再是简单的声明式逻辑，这里是想要显示变量message的翻转字符串，当你想要在模板中多次引用此处的翻转字符串时，
+         就会更加难以处理
+         所以对于任何复杂逻辑，你都应当使用计算属性
+         -->
+        {{message.split('').reverse().join('')}}
+    </div>
+
+    <!-- 计算属性的基础例子 -->
+    <div id="example-1">
+        <p>Original message:"{{message}}"</p>
+        <p>Computed reversed message:"{{reversed}}"</p>
+    </div>
+
+
+
+    <script>
+        var vm=new Vue({
+            el:'#example-1',
+            data:{
+                message:'Hello'
+            },
+            computed:{
+                //计算属性的getter
+                reversed:function(){
+                    //'this'指向vm实例
+                    return this.message.split('').reverse().join('')
+                }
+            }
+        })
+        console.log(vm.reversed)
+        vm.message='GoodsBy'
+        console.log(vm.reversed)
+    </script>
+</body>
+</html>

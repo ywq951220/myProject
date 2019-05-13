@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Class与Style绑定</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<!--
+  表单输入绑定
+  基础用法：使用 v-model 指令在表单<input>、<textarea>、<select>元素上创建双向数据的绑定。他会根据控件类型自动选取正确的
+            方法来更新元素，它负责监听用户的输入事件以更新数据，并对一些极端场景进行一些特殊处理
+  注意：v-model 会忽略所有表单元素的value、checked、selected特殊的初始值，而总是将Vue实例的数据作为数据来源，所以应该通过
+        JavaScript在组件的data选项中声明初始值
+-->
+<!-- 复选框：多个复选框绑定到同一个数组 -->
+<div id="example-3">
+  <input type="checkbox" id="jack" value="Jack" v-model="checkedNames"/>
+  <label for="jack">Jack...</label>
+
+  <input type="checkbox" id="john" value="John" v-model="checkedNames"/>
+  <label for="john">John...</label>
+
+  <input type="checkbox" id="mike" value="Mike" v-model="checkedNames"/>
+  <label for="mike">Mike...</label>
+  <br/>
+  <span>Checked names:{{checkedNames}}</span>
+</div>
+
+<!-- 单选按钮 -->
+<div id="example-4">
+  <input type="radio" id="one" value="1" v-model="picked"/>
+  <label for="one">女</label>
+  <br/>
+  <input type="radio" id="two" value="2" v-model="picked"/>
+  <label for="two">男</label>
+  <br/>
+  <sapn>Picked:{{picked}}</sapn>
+</div>
+
+<!-- 选择框 -->
+<!-- 单选时 -->
+<div id="example-5">
+  <select v-model="selected">
+    <option disabled value="">请选择</option>
+    <option>AA</option>
+    <option>BB</option>
+    <option>CC</option>
+  </select>
+  <span>Selected:{{selected}}</span>
+</div>
+<!--
+  使用 v-for 渲染的动态选项
+-->
+<div id="example-6">
+  <select v-model="selected">
+    <option v-for="option in options" :value="option.value">
+      {{option.text}}
+    </option>
+  </select>
+  <span>Selected:{{selected}}</span>
+</div>
+
+
+<script>
+  var example3 = new Vue({
+    el: '#example-3',
+    data: {
+      checkedNames: []
+    }
+  })
+  var example4 = new Vue({
+    el: '#example-4',
+    data: {
+      picked: ''
+    }
+  })
+  var example5 = new Vue({
+    el: '#example-5',
+    data: {
+      selected: ''
+    }
+  })
+  var example6 = new Vue({
+    el: '#example-6',
+    data: {
+      selected: 'A',
+      options: [
+        {text: 'One', value: 'A'},
+        {text: 'Two', value: 'B'},
+        {text: "Three", value: 'C'}
+      ]
+    }
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>自定义指令</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<!--
+  除了核心功能默认内置的指令(v-model和v-show)，Vue也允许注册自定义指令
+-->
+<input id="input-demo" v-focus/>
+
+<!--
+  钩子函数：
+    1、bind：值调用一次，指令第一次绑定到元素上时调用。在这里可以进行一次性的初始化设置
+    2、inserted：被绑定元素插入父节点时调用(进保证父节点存在，但不一定一被插入到文档中)
+    3、update：所在组件的VNode跟新时调用，但是可能发生在其子VNode跟新之前。指令的值可能发生了改变，也可能没有
+-->
+
+
+<script>
+  //注册一个全局自定义指令：‘v-focus’
+  Vue.directive('focus', {
+    //当被绑定的元素插入到DOM中去时触发
+    inserted: function (el) {
+      //聚焦元素
+      el.focus
+    }
+  })
+
+  var inputDemo = new Vue({
+    el: '#input-demo'
+  })
+
+  //钩子函数的简写：在很多时候。可能想在 bind 和 update 时触发相同的行为，而不关心其他的钩子函数
+  Vue.directive('color-swatch', function (el, binding) {
+    el.style.backgroundColor = binding.value
+  })
+
+</script>
+</body>
+</html>

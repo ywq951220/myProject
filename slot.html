@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>插槽</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+    <a-date-picker
+        format="YYYY-MM-DD HH:mm:ss"
+        :disabledDate="disabledDate"
+        :disabledTime="disabledDateTime"
+        :showTime="{defaultValue: moment('00:00:00', 'HH:mm:ss')}"
+    />
+
+
+<script>
+    import moment from 'moment';
+    export default{
+        methods:{
+            moment,
+            range(state,end){
+                const result=[];
+                for (let i = state;i<end;i++){
+                    result.push(i);
+                }
+                return result;
+            },
+            disabledDate(current) {
+                return current && current<moment.endOf('day');
+            }
+        }
+    }
+</script>
+</body>
+</html>

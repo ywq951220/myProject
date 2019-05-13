@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>路由的基本使用</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <router-link to="/login">登录</router-link>
+  <router-link to="/register">注册</router-link>
+
+  <router-view></router-view>
+</div>
+
+
+<script>
+
+  //创建子组件
+  var login = {
+    template: '<h3>这是登录子组件</h3>'
+  }
+  var register = {
+    template: '<h3>这是注册子组件</h3>'
+  }
+
+  var router = new VueRouter({
+    routes: [ //这是路由规则
+      {path: '/', redirect: '/login'},
+      {path: '/login', component: login},
+      {path: '/register', component: register}
+    ],
+    linkActiveClass: 'myactive'//和激活相关的类。即class属性
+  })
+
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    // router:router
+    router
+  })
+</script>
+</body>
+</html>

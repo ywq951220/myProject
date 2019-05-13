@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>事件处理</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<!--
+  监听事件：可以用 v-on 指令监听DOM事件，并在触发时运行一些JavaScript代码
+-->
+<div id="example-1">
+    <button @click="counter+=1">Add</button>
+    <p>The Button above has been clicked {{counter}} times...</p>
+</div>
+
+<!--
+  事件处理方法：在许多事件处理逻辑中会更为复杂，所以直接把JavaScript代码写在 v-on 指令中时不可行的。因此。v-on
+  还可以接收一个需要调用的方法名称
+-->
+<div id="example-2">
+    <button @click="greet">Greet</button>
+</div>
+
+<!--
+  内联处理器中的方法：除了直接绑定一个方法上，也可以在内联JavaScript语句中调用方法
+-->
+<div id="example-3">
+    <button @click="say('hi')">Say hi</button>
+    <button @click="say('what')">Say what</button>
+    <!-- 有时也需要在内联语句处理器中访问原始的DOM事件。可以使用特殊变量 $event 把他传入方法中去 -->
+    <button @click="warn('From cannot be...',$event)">Submit</button>
+</div>
+
+<!--
+  事件修饰符：vue.js 为 v-on 提供了事件修饰符，修饰符是由点开头的指令后缀来表示的
+  .stop：阻止单击事件继续传播
+  .prevent：提交事件不在重载页面
+  .capture：添加事件监听器时使用事件捕获模式，即元素自身触发的事件先在此处理，然后才交由内部元素进行处理
+  .self：只有在 event.target 是当前元素自身时触发处理函数，即事件不是从内部元素触发的
+  .once：点击事件将只会触发一次
+  .passive：滚动事件的默认行为(即滚动行为)将立即触发
+-->
+<!-- 阻止单击事件继续传播 -->
+<a @click.stop="doThis"></a>
+<!-- 提交事件不在重载页面 -->
+<form @submit.prevent="onSubmit"></form>
+<!-- 添加事件监听器时使用事件捕获模式，即元素自身触发的事件先在此处理，然后才交由内部元素进行处理 -->
+<div @click.capture="doThis">...</div>
+<!-- 只有在 event.target 是当前元素自身时触发处理函数，即事件不是从内部元素触发的 -->
+<div @click.self="doThat">...</div>
+
+<!--
+  使用修饰符时，顺序很重要。相应的代码会以同样的顺序产生，因此：
+  v-on:click.prevent.self ==> 会阻止所有的点击
+  v-on:click.self.prevent ==> 只会阻止对元素自身的点击
+-->
+<!-- 点击事件将只会触发一次 -->
+<a @click.once="doThis"></a>
+<!--
+  滚动事件的默认行为(即滚动行为)将立即触发，而不会等待‘onScroll’完成。这其中包含‘event.preventDefault()’的情况
+-->
+<div @scroll.passive="onScroll">...</div>
+<!--
+  注意：不要把 .passive 和 .prevent 一起使用，因为 .prevent 将会被忽略，同时浏览器可能会向你展示一个警告。
+        .prevent 会告诉浏览器你不想阻止事件的默认行为
+-->
+
+<!--
+  按键修饰符：在监听键盘事件时。Vue允许为 v-on 在监听键盘事件时添加按键修饰符
+-->
+
+
+<script>
+    var example1 = new Vue({
+        el: '#example-1',
+        data: {
+            counter: 0
+        }
+    })
+
+    var example2 = new Vue({
+        el: '#example-2',
+        data: {
+            name: 'vue.js'
+        },
+        //在 methods 对象中定义方法
+        methods: {
+            greet(event) {
+                //this 在方法里指向当前的Vue实例
+                alert('Hello  ' + this.name + '!')
+                //event 是原生的DOM事件
+                //event对象：代表事件的状态。如：事件在其中发生的元素、键盘按键的状态、鼠标的位置、鼠标按钮的状态
+                //event.target：返回触发此事件的元素(<button>Greet</button>)
+                //event.target.tagName：返回触发此事件的元素名(BUTTON)
+                if (event) {
+                    console.log(event.target)
+                    alert(event.target.tagName)
+                }
+            }
+        }
+    })
+
+    var example3 = new Vue({
+        el: '#example-3',
+        methods: {
+            say: function (message) {
+                alert(message)
+            },
+            warn: function (message, event) {
+                if (event) {
+                    //event.preventDefault()：通知浏览器不要执行与事件关联的默认动作
+                    event.preventDefault()
+                }
+                alert(message)
+            }
+        }
+    })
+</script>
+</body>
+</html>

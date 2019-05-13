@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>组件案例-评论列表</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+
+
+  <input type="text" v-model="firstName"/>+
+  <input type="text" v-model="lastName"/>=
+  <input type="text" v-model="fullName"/>
+</div>
+
+
+<script>
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstName: '',
+      lastName: '',
+      fullName: ''
+    },
+    methods: {},
+    watch: {//使用这个属性可以监视 data 中指定数据的变化，然后触发这个 watch 中对应的 function 处理函数
+      // 'firstName': function () {
+      //   console.log('监视到了firstName的变化')
+      //   this.fullName = this.firstName + '-' + this.lastName
+      // }
+      'firstName': function (newVal, oldVal) {//newVal表示新的数据，oldVal表示旧的数据
+        console.log(newVal + '---' + oldVal)
+        this.fullName = newVal + '-' + this.lastName
+      },
+      'lastName': function (newVal) {
+        this.fullName = this.firstName + '-' + newVal
+      }
+    }
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>条件渲染</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+<!--
+  v-if 指令用于条件性的渲染一块内容，这块内容只会在指令的表达式返回true时被渲染
+-->
+<h1 v-if="awesome">Vue is awesome</h1>
+<h1 v-else>Oh no</h1>
+
+<h1>在 template 元素上使用 v-if 条件渲染分组</h1>
+<!--
+  注意：v-if是一个指令，所以必须将他添加到一个元素上。但是如果想切换多个元素时，此时可以把一个<template>元素当做不可见的包
+        裹元素，并在上面使用v-if。最终的渲染结果将不包含<template>元素
+-->
+<template v-if="ok">
+    <h1>Title</h1>
+    <p>Paragraph 1</p>
+    <p>Paragraph 2</p>
+</template>
+
+
+<!--
+  v-else-if
+  类似于 v-else，v-else-if 也必须紧跟在带 v-if 或者 v-else-if 的元素之后
+-->
+<div v-if="type === 'A'">
+    A
+</div>
+<div v-else-if="type === 'B'">
+    B
+</div>
+<div v-else-if="type === 'C'">
+    C
+</div>
+<div v-else>
+    Not A/B/C
+</div>
+
+<h1>用key管理可复用的元素</h1>
+<!--
+  vue会尽可能高的渲染元素，通常会复用已有元素而不是从头开始渲染，这么做除了使Vue变得非常快之外，还有其他一些好处。
+  如：如果你允许用户在不同的方式之间切换
+-->
+<template v-if="loginType==='username'">
+    <label>Username</label>
+    <input placeholder="请使用用户名登录" key="username-input"/>
+</template>
+<template v-else>
+    <label>Email</label>
+    <input placeholder="请使用邮箱登录" key="email-input"/>
+</template>
+
+<!--
+  v-show：是另一种根据条件展示元素的指令，和 v-if 不同的是带有 v-show 的元素始终会被渲染并保留在DOM中，v-show 只是简单的
+          切换元素的CSS属性 display
+  注意：v-show 不支持 <template> 元素，也不支持 v-else
+
+  v-show 和 v-else 的区别
+    1、v-if 是“真正”的条件渲染，因为他会确保在切换过程中条件块内的事件监听器和子组件适当的被销毁和重建
+    2、v-if 也是惰性的：如果在初始渲染时条件为假，则什么也不做，一直到条件第一次变为真时，才会开始渲染条件块
+    3、相比之下，v-show 就简单的多，不管初始条件是什么，元素总会渲染，并且只是简单的基于CSS进行切换
+    4、一般来说，v-if 有更高的切换开销，而 v-show 有更高的初始渲染开销。因此，如果需要非常频繁地切换，
+       则使用 v-show 较好；如果在运行时条件很少改变，则使用 v-if 较好
+
+  v-if 和 v-for 一起使用
+    1、不推荐同时使用 v-if 和 v-for
+    2、当 v-if 和 v-for 一起使用时，v-for 具有比 v-if 更高的优先级，这意味着 v-if 将分别重复运行于每个 v-for 循环中
+-->
+
+
+
+<script>
+
+</script>
+</body>
+</html>

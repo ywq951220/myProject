@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>组件案例-评论列表</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<!--
+  1、使用npm的包管理工具进行管理(npm init -y),生成 package.json 文件
+  2、将 JS 文件进行打包，然后引入到 HTML 文件中去
+     (webpack  要打包的文件路径(./src/main.js)  输出的文件路径(./dist/bundle.js))
+     注意：使用此方法进行打包的时候，当每次改变代码时，都要运行以上代码
+  3、如果需要自动进行打包，则需要安装一个工具(使用 cnpm i webpack-dev-server -D)，此工具可以帮助我们实时的打包，成功
+     安装之后，需要创建一个 webpack.config.js 文件
+  4、在 webpack.config.js 文件中需要向外暴露一个配置对象。如下：
+     //注意：当以命令行的形式运行 webpack 或webpack-dev-server 的时候，工具会发现我们并没有提供要打包的入口和出口文件，
+       此时他会检查项目根目录中的配置文件，并读取这个文件，变就拿到了导出的这个配置对象，然后根据这个对象进行打包构建
+     module.exports={
+       entry:path.join(__dirname,'./src/main.js'),//入口文件
+       output:{
+         path:path.join(__dirname,'./dist'),//输出路径
+         filename:'bundle.js'//指定输出文件的名称
+       },
+       plugins:[//所有 webpack 插件的配置节点
+         new htmlWebpackPlugin({
+           template:path.join(__dirname,'./src/index.html'),//指定模板文件的路径
+           filename:'index.html'//设置生成的内存页面名称
+         })
+       ],
+       module:{ //配置所有第三方 loader 模块的节点
+         rules:[ //第三方配置文件的匹配规则
+           {test:/\.css$/,use['style-loader','css-loader']},//处理 css 文件的 loader
+           {test:/\.less$/,use['style-loader','css-loader','less-loader']},//处理 less 文件的 loader
+           {test:/\.scss$/,use['style-loader','css-loader','sass-loader']},//处理 scss 文件的 loader
+           {test:/\.(jpg | png | gif | jpeg)$/,use:'url-loader?limit=7631&name=[hash:8]-[name].[ext]'},//处理图片
+            路径的 loader
+           注意：
+             1)?：表示传参
+             2)limit：取值为图片大小的字节数。当取值大于图片的字节数时，会把图片路径转为 base64 格式的字符串，当取值
+               小于等于图片的字节数时，则不会把图片路径转为 base64 格式的字符串，但图片名称会被转为一串数字，与原图片的
+               名称不符
+             3)name：表示显示原图片的名称，第一个取值为截取 hash 的钱八位与图片原名称进行拼接，第二个取值为图片的原名称，
+               第三个取值为图片的后缀名
+           {test:/\.(ttf | eot | svg | woff | woff2)$/,use:'url-loader'},//处理字体文件(小图标)的 loader
+         ]
+       }
+     }
+     //注意：使用该工具时，当修改代码的时候，需要运行 webpack
+  5、如果想要进行实时的打包，需要在 package.json 文件中的 scripts 对象中添加以下脚本：
+     "dev":"webpack-dev-server --open --port 3000 --contentBase src --hot"
+     注意：
+       1)--open：表示自动打开浏览器
+       2)--port 3000：生成 3000 的端口号
+       3)--contentBase src：进去时就打开 src 目录
+       4)--hot：实现热更新
+  6、使用(cnpm i html-webpack-plugin -D)工具可以在内存中生成一份一样的 index.html 页面，它会自动将 bundle.js 文件注入
+     到页面的底部。安装完成之后，需在 webpack.config.js 配置文件中进行配置。代码如下：
+     //如果需要配置该插件，则需在导出的对象中挂载一个 plugins 节点，代码如第四步所示
+     var htmlWebpackPlugin = require('html-webpack-plugin')
+  7、如果需要在页面里面引入一些 css 样式(css文件)
+     注意：需要在 main.js 文件中引入。代码如下：
+     import './css/index.css'
+     注意：在引入非 js 文件时需要安装第三方 loader。处理样式表的loader(cnpm i style-loader css-loader -D)。安装完成
+     之后，需要在 webpack.config.js 文件中添加一个 module 的配置节点，代码如第四步所示
+  8、如果需要在页面里面引入一些 less 文件
+     注意：需要在 main.js 文件中引入。代码如下：
+     import './css/index.less'
+     注意：在引入非 js 文件时需要安装第三方 loader。处理样式表的loader(cnpm i less-loader less -D)。安装完成
+     之后，需要在 webpack.config.js 文件中添加一个 module 的配置节点，代码如第四步所示
+  9、如果需要在页面里面引入一些 scss 文件
+     注意：需要在 main.js 文件中引入。代码如下：
+     import './css/index.scss'
+     注意：在引入非 js 文件时需要安装第三方 loader。处理样式表的loader(cnpm i sass-loader node-sass -D)。安装完成
+     之后，需要在 webpack.config.js 文件中添加一个 module 的配置节点，代码如第四步所示
+  10、默认情况下，webpack 无法处理 css 文件中的 URL 地址，不管是图片还是字体库，只要是 URL 地址都处理不了。需要安装
+     第三方模块 loader(cnpm i url-loader file-loader -D(注意：url-loader 依赖于 file-loader，所以还的安装 file-loader))，
+     安装完成之后，需要在 webpack.config.js 文件中添加一个 module 的配置节点，代码如第四步所示
+     注意：file-loader 是内部依赖的，所以不需要在 webpack.config.js 文件中的 module 节点中配置
+-->
+
+
+
+<script>
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {}
+  })
+</script>
+</body>
+</html>

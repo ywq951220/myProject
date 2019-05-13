@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基础</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <!--
+      一、构造器：
+        1、vue.js就是一个构造器。通过构造器Vue来实例化一个对象，如：var vm=new Vue({})
+        2、实例化Vue时，需要传入一个参数(选项对象)
+        3、参数：选项对象可以包含==>挂载元素(el)、数据(data)、方法(methods)、模板(template)、生命周期函数等
+        4、扩展构造器Vue，从而使用预先定义选项创建可复用的组件构造器，所有组件都是被扩展的Vue的实例，使用Vue.extend({})来扩展
+        注意：尽管可以命令式的创建扩展实例，不过在多数情况下建议将组件构造器注册为一个自定义元素，然后申明式的用在模板中
+      二、属性与方法
+        1、每个Vue的实例都会代理其data对象里的所有属性，被代理的属性书响应的
+        2、如果实例创建之后添加新的属性到实例上，不会触发视图更新
+        3、不要在实例属性或者回调函数中(如：vm.$watch('a',newVal => this.myMethod()))使用箭头函数，因为箭头函数绑定父上下文，
+        所以this不会像预先的一样使Vue实例，而是this.myMethod未被定义
+        4、
+    -->
+
+
+    <div id="app-2">
+        <!-- v-bind被称为指令。指令带有前缀v-，表示他们是Vue提供的特殊特性，该指令的意思是讲这个元素节点的title特性与Vue实例的
+         message属性保持一致-->
+        <span v-bind:title="message">鼠标悬停几秒查看此处动态绑定的信息</span>
+    </div>
+
+
+
+
+    <script>
+        var app2=new Vue({
+            el:'#app-2',
+            data:{
+                message:'页面加载于'+new Date().toLocaleString()
+            }
+        })
+    </script>
+</body>
+</html>

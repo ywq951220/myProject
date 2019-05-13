@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>vue实例</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+
+<script>
+  //数据对象
+  var data = {a: 1}
+
+  //该对象加入到一个Vue实例中
+  var vm = new Vue({
+    data: data
+  })
+
+  //获取这个实例上的属性，返回源数据中对应的字段
+  console.log(vm.a == data.a) //true
+
+  //设置属性也会影响到原始数据
+  vm.a = 2
+  console.log(data.a) //2
+
+  //反之亦然
+  data.a = 3
+  console.log(vm.a)  //3
+
+  //注意：当这些数据改变时，视图会进行重新渲染，值得注意的是只有当实例被创建时data中存在的属性才是响应式的。
+  // 也就是说如果你添加一个新的属性，如：vm.b='h1',那么对b的改动将不会触发任何视图的更新
+
+  //除了数据属性，Vue实例还暴露了一些有用的实例属性和方法。他们都有前缀 $ ,以便与用户定义的属性区分开
+
+  /**
+   * 实例生命周期钩子
+   * --每个Vue实例在创建的时候都要经过一系列的过程。如：需要设置数据监听、编译模板、将实例挂载到DOM并在数据变化时
+   * 更新DOM等。同时在这个过程中也会运行一些叫做生命周期钩子的函数，这给了用户在不同的阶段添加自己的代码的机会
+   *
+   * 如：created钩子可以用来在一个实例被创建之后执行代码
+   * */
+  new Vue({
+    data: {
+      a: 1
+    },
+    create: function () {
+      //this指向vm实例
+      console.log("a is: " + this.a)
+    }
+  })
+  /**
+   * 也有一些其他钩子，在实例生命周期的不同阶段被调用，如：mounted、updated和destroyed。生命周期钩子的 this 上下文指向
+   * 调用他的Vue实例
+   *
+   * 注意：不要在选项属性回调上使用箭头函数，比如 created: () => console.log(this.a) 或
+   *       vm.$watch('a', newValue => this.myMethod())。因为箭头函数并没有 this，this 会作为变量一直向上级词法作用
+   *       域查找，直至找到为止
+   */
+</script>
+</body>
+</html>

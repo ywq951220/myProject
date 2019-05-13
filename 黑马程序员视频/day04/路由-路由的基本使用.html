@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>路由的基本使用</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+  <style>
+    <!--
+    router-link-active：默认的激活类。即class属性
+
+    -->
+    .router-link-active, .myactive {
+      color: red;
+      font-weight: 900;
+      text-decoration: underline;
+    }
+
+    .v-enter, .v-leave-to {
+      opacity: 0;
+      transform: translateX(140px);
+    }
+
+    .v-enter-active, .v-leave-active {
+      transition: all 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+<!--
+  路由：
+  1、后端路由：对于一个普通的网站，所有的超链接都是URL地址，所有的URL地址都对应服务器上对应的资源
+  2、前端路由：对于单页面应用程序来说，主要通过URL中的hash(#)来实现不同页面之间的切换。
+    2.1 hash的特点：HTTP请求中不会安博涵hash相关的内容，所以单页面程序中的页面跳转主要用hash实现
+  3、在单页面应用程序中，这种通过 hash 改变来切换页面的方式，称作前端路由
+-->
+
+
+<div id="app">
+
+  <!--<a href="#/login">登录</a>-->
+  <!--<a href="#/register">注册</a>-->
+
+  <!-- router-link 默认会渲染为一个 a 标签 -->
+  <router-link to="/login" tag="span">登录</router-link>
+  <router-link to="/register">注册</router-link>
+
+  <!--
+    这是 vue-router 提供的元素，专门用来当做占位符的，将来路由规则匹配到的组件就会展示到这个 router-view 中去，
+    所以我们可以把 router-view 认为是一各占位符
+  -->
+  <!-- 将路由使用动画进行控制，mode="out-in"表示先出后进 -->
+  <transition mode="out-in">
+    <router-view></router-view>
+  </transition>
+</div>
+
+
+<script>
+
+  //组件模板对象
+  var login = {
+    template: '<h1>登录组件</h1>'
+  }
+  var register = {
+    template: '<h1>注册组件</h1>'
+  }
+
+  //2、创建一个路由对象，当导入 vue-router 包之后，在 window 全局对象中，就有了一个路由的构造函数，叫做 VueRouter
+  //在 new 路由对象的时候，可以为构造函数传递一个配置对象
+  var routerObj = new VueRouter({
+    // route//这个配置对象中的 route 表示路由的匹配规则
+    routes: [//路由匹配规则
+      //每个路由规则都是一个对象，这个规则对象身上有两个必须的属性
+      //属性1：path--表示监听哪个路由链接地址
+      //属性2：component--表示路由是前面匹配到的path，则展示 component 属性对应的那个组件
+
+      //注意：component 的属性值必须是一个组件模板对象，不能是组件的引用名称
+      // {path: '/', component: login},
+      {path: '/', redirect: '/login'}, //这里的 redirect(重定向) 和 Node 中的 redirect 完全是两码事
+      {path: '/login', component: login},
+      {path: '/register', component: register}
+    ],
+    //自定义的激活类。即class属性
+    linkActiveClass: 'myactive'
+  })
+
+
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router: routerObj //将路由对象注册到 vm 实例上，用来监听 URL 地址的变化，然后展示对应的组件
+  })
+</script>
+</body>
+</html>

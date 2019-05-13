@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>路由的嵌套</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <router-link to="/account">Account</router-link>
+
+  <router-view></router-view>
+</div>
+
+<template id="tmpl">
+  <div>
+    <h1>这是 Account 组件</h1>
+    <router-link to="/account/login">登录</router-link>
+    <router-link to="/account/register">注册</router-link>
+
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+
+  //组件的模板对象
+  var account = {
+    template: '#tmpl'
+  }
+  var login = {
+    template: '<h3>登录</h3>'
+  }
+  var register = {
+    template: '<h3>注册</h3>'
+  }
+
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/account',
+        component: account,
+        children: [ //使用 children 实现子路由的嵌套
+          //注意：子路由的 path 属性的值前面不带 ‘/’，否则永远以根目录开始请求，这样不方便我们用户去理解 URL 地址
+          {path: 'login', component: login},
+          {path: 'register', component: register}
+        ]
+      }
+      // {path: '/account/login', component: login},
+      // {path: '/account/register', component: register}
+    ]
+  })
+
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  })
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>循环</title>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app-3">
+        <p v-if="seen">判断该句话是否显示</p>
+    </div>
+    <div id="app-4">
+        <ol>
+            <!-- v-for指令需要需要使用“item in items”形式的特殊语法，items是源数据数组并且item是数组元素迭代的别名,
+             也可以将“in”替换成“of”作为分隔符，因为他是最接近JavaScript的语法-->
+            <li v-for="todo in todos">
+                {{todo.text}}
+            </li>
+        </ol>
+    </div>
+    <div id="example-2">
+        <ul>
+            <li v-for="(item,index) in items">
+                {{parentMessage}}-{{index}}-{{item.message}}
+            </li>
+        </ul>
+    </div>
+    <!-- 一个对象的v-for，也可以使用键值对的形式显示-->
+    <div id="v-for-Object">
+        <ul>
+            <!-- 注意：迭代的别名中可以有三个参数
+             第一个参数：值
+             第二个参数：键
+             第三个参数：索引,索引从0开始-->
+            <li v-for="(valu,key,index) of object">
+                {{valu}}<br/>
+                {{key}}--{{valu}}<br/>
+                {{index}}--{{key}}--{{valu}}
+            </li>
+        </ul>
+    </div>
+
+
+
+    <script>
+        var app3=new Vue({
+            el:'#app-3',
+            data:{
+                seen:true
+            }
+        })
+        var app4=new Vue({
+            el:'#app-4',
+            data:{
+                todos:[
+                    {text:'aaaaaaa'},
+                    {text:'bbbbbbbbb'},
+                    {text:'ccccccccccc'}
+                ]
+            }
+        })
+        var example2=new Vue({
+            el:'#example-2',
+            data:{
+                parentMessage:'parent',
+                items:[
+                    {message:'zzzzzzzzzzz'},
+                    {message:'xxxxxxxxxxxxxx'}
+                ]
+            }
+        })
+        new Vue({
+            el:'#v-for-Object',
+            data:{
+                object:{
+                    ename:'李四',
+                    gender:'男',
+                    age:30,
+                    address:'兰州市'
+                }
+            }
+        })
+    </script>
+</body>
+</html>

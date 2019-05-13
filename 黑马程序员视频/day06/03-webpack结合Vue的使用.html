@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>webpack结合Vue的使用</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<!--
+  webpack中如何使用Vue：
+  1、安装Vue包：(cnpm i vue -S)
+  2、由于在 webpack 中推荐使用 .vue 这个组件模板定义组件，所以，需要安装能够给解析 这种文件的 loader
+     (cnpm vue-template-complier -D)
+  3、在 main.js 中导入 Vue 模板(import Vue from 'vue')
+  4、定义一个 .vue 结尾的组件
+  5、使用 (import login from './login.vue') 导入这个组件
+  6、创建 vm 实例(var vm = new Vue({el:'#app',...,render:c => c(login)}))
+  7、在页面中创建一个 id 为 app 的 div 元素，作为 vm 实例所控制的区域
+-->
+
+
+<script>
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {}
+  })
+</script>
+</body>
+</html>

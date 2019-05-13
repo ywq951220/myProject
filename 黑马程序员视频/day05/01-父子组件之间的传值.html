@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>父子组件之间的传值</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+  <com1 :parentmsg="msg" @func="getMsgFormSon"></com1>
+</div>
+
+<template id="tmpl">
+  <div><!-- 唯一的根元素 -->
+    <h1>这是子元素 --- {{parentmsg}}</h1>
+    <input type="button" value="向父组件传递消息" @click="sendMsg"/>
+  </div>
+</template>
+
+
+<script>
+
+  //子组件的模板对象
+  var com1 = {
+    template: '#tmpl',
+    data() {
+      return {
+        msg: '子组件定义的数据！！！'
+      }
+    },
+    props: [
+      'parentmsg'
+    ],
+    methods:{
+      sendMsg(){
+        this.$emit('func',this.msg)
+      }
+    }
+  }
+
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({//相当于父组件
+    el: '#app',
+    data: {
+      msg: '这是父组件中的数据',
+      msgFormSon:''
+    },
+    methods: {
+      getMsgFormSon(data) {
+        this.msgFormSon=data
+        console.log(this.msgFormSon)
+      }
+    },
+    components: {
+      com1
+    }
+  })
+</script>
+</body>
+</html>

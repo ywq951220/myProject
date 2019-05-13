@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>组件案例-评论列表</title>
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <!-- 1、安装 vue-router 路由模块 -->
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+
+<script>
+
+  //watch、computed和methods之间的对比
+  //1、computed：computed属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算，主要当做属性来使用
+  //2、methods：methods方法表示一个具体的操作，主要书写业务逻辑
+  //3、watch：watch是一个对象，键是需要观察的表达式，值是对应的回调函数，主要用来监听某些特定数据的变化，从而进行某些具体的
+  // 业务逻辑操作。可以看作是 computed 和 methods 的结合体
+
+  //创建Vue实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {}
+  })
+</script>
+</body>
+</html>
